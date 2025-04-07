@@ -1,20 +1,26 @@
-# Skyscrapers puzzle
+# 🏙️ Skyscrapers Puzzle Solver (Python)
 
-In a grid of N by N squares you want to place a skyscraper in each square with only some clues:
-- The height of the skyscrapers is between 1 and N floors.
-- No two skyscrapers in a row or column may have the same number of floors.
-- A clue is the number of skyscrapers that you can see in a row or column from the outside.
-- Higher skyscrapers block the view of lower skyscrapers located behind them.
+A Python-based solver for the classic **Skyscrapers logic puzzle** using human-like reasoning strategies and constraint reduction techniques.
 
-## Example with N = 4
-To understand how the puzzle works, this is an example of a row with 2 clues.
-Seen from the left side there are 4 skyscrapers visible while seen from the right side only 1:  
-4 - - - - 1
-There is only one way in which the skyscrapers can be placed. From left-to-right all four skyscrapers must be visible and no skyscraper may hide behind another skyscraper:
-4 1 2 3 4 1
-Example of a 4 by 4 puzzle with the solution:
+---
 
-## The clues  
+## 🧠 Puzzle Rules Recap
+
+- Each row and column must contain **unique building heights** from 1 to N.  
+- **Clues** around the grid show how many skyscrapers are visible from that side.  
+- A **taller building hides** shorter ones behind it.  
+
+---
+
+## 🔢 Example (N = 4)
+
+A row:  
+Seen from the left (4 visible), right (1 visible):  
+```
+4 | 1 2 3 4 | 1
+```
+
+### The clues  
 
 |   |   |   |   |   |   |
 |---|---|---|---|---|---|
@@ -25,7 +31,7 @@ Example of a 4 by 4 puzzle with the solution:
 | 0 | - | - | - | - | 0 |
 |   | 0 | 0 | 3 | 0 |   |
 
-## The solution  
+### The solution  
 
 |   |   |   |   |   |   |
 |---|---|---|---|---|---|
@@ -36,39 +42,71 @@ Example of a 4 by 4 puzzle with the solution:
 | 3 | 1 | 3 | 2 | 4 | 1 |
 |   | 2 | 2 | 3 | 1 |   |
 
-## Usage  
 
-When instanciating the class:  
-Pass the size N and the clues in a list of 4N items.  
-This list contains the clues around the clock, index:
+---
 
-|    |    |    |    |    |    |
-|----|----|----|----|----|----|
-|    |  0 |  1 |  2 |  3 |    |
-| 15 | -- | -- | -- | -- |  4 |
-| 14 | -- | -- | -- | -- |  5 |
-| 13 | -- | -- | -- | -- |  6 |
-| 12 | -- | -- | -- | -- |  7 |
-|    | 11 | 10 |  9 |  8 |    |
+## 🚀 Usage
 
-If no clue is available, add value `0`
-Each puzzle has only one possible solution.
-`solve_puzzle()` returns a list of 4 lists, each of 4 integers.
-The first indexer is for the row, the second indexer for the column.
+```python
+from skyscrapers import Skyscrapers
 
-## DESIGN CONSIDERATIONS
+clues = [
+  0, 0, 1, 2,  # top clues (left to right)
+  0, 2, 0, 0,  # right clues (top to bottom)
+  0, 0, 3, 0,  # bottom clues (right to left)
+  0, 1, 0, 0,  # left clues (bottom to top)
+]
 
-1. The puzzle resolving follows a human thinking approach.  
-   - The first stage, basic resolving from clues is done.  
-   - The second stage, we loop through a series of values possibility reduction techniques.  
-   - Finally if the puzzle can't be solved we choose a value to start with and try recursively until we find a solution or we explored all of them without success.
-2. Other approaches are:  
-   - Precomputing all the combinations possible. 576 for a size (4).
-   - Going brute force, which is pointless when scaling up.
-   - Translating the problem to use a [SAT solver](https://www.cs.ru.nl/bachelors-theses/2022/Laura_Kolijn___1025724___Generating_and_Solving_Skyscrapers_Puzzles_Using_a_SAT_Solver.pdf)
+solver = Skyscrapers(4, clues)
+solution = solver.solve_puzzle()
+```
 
-## TESTING
+- The `clues` list is **4 × N** elements, starting top and going clockwise.
+- `solve_puzzle()` returns a 2D list: one row per line, with each cell containing a height from 1 to N.
 
-1. This solution uses pytest for testing (which is the only dependency).
-2. There is a timing constraint **RESOLUTION_TIME_S** in ./tests/test_skyscrapers.py  
-   You might edit it according to your own configuration.
+---
+
+## 🧰 Solver Logic
+
+1. 🔍 **Clue-based deduction**: Starts with direct implications from each clue.  
+2. 🧠 **Constraint propagation**: Iteratively eliminates impossible values from the grid.  
+3. 🧪 **Backtracking**: If needed, guesses are made and tested recursively.  
+
+Alternatives like brute force, precomputing permutations, or using a SAT solver are discussed in academic references (e.g. [SAT solver paper](https://www.cs.ru.nl/bachelors-theses/2022/Laura_Kolijn___1025724___Generating_and_Solving_Skyscrapers_Puzzles_Using_a_SAT_Solver.pdf)).
+
+---
+
+## ✅ Requirements
+
+- Python 3.8+  
+- `pytest` (for tests only)
+
+---
+
+## 🧪 Testing
+
+Run all tests:
+
+```bash
+pytest
+```
+
+The file `./tests/test_skyscrapers.py` includes a time constraint `RESOLUTION_TIME_S` which you can adjust depending on your system.
+
+---
+
+## 📜 License
+
+This project is open-source under the MIT License.
+
+---
+
+## 👤 Author
+
+**Emmanuel Amadio**  
+🌍 [Website](https://emmanuel-io.github.io/en)  
+🐙 [GitHub](https://github.com/emmanuel-io)
+
+---
+
+> Inspired by logic puzzle enthusiasts and designed to mimic how a human would approach the game.
